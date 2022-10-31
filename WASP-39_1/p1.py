@@ -6,12 +6,14 @@ import os
 import utils as utl
 import matplotlib.gridspec as gd
 
-f1 = h5py.File(os.getcwd() + '/Stage4/S4_2022-10-18_wasp39_run1/ap10_bg11/S4_wasp39_ap10_bg11_LCData.h5')
+f1 = h5py.File(os.getcwd() + '/Stage4/S4_2022-10-20_wasp39_run1/ap8_bg9/S4_wasp39_ap8_bg9_LCData.h5')
 tim7, fl7, fle7 = np.asarray(f1['time']), np.asarray(f1['flux_white']), np.asarray(f1['err_white'])
 tim7 = tim7 + 2400000.5
+# Removing Nan values
+tim7, fl7, fle7 = tim7[~np.isnan(fl7)], fl7[~np.isnan(fl7)], fle7[~np.isnan(fl7)]
 
 # Outlier removal
-msk1 = utl.outlier_removal(tim7, fl7, fle7)
+msk1 = utl.outlier_removal(tim7, fl7, fle7, clip=10)
 tim7, fl7, fle7 = tim7[msk1], fl7[msk1], fle7[msk1]
 
 # Normalizing the lightcurve
@@ -47,8 +49,8 @@ hyper_tot = hyper_P + hyper_ins
 priors = juliet.utils.generate_priors(par_tot, dist_tot, hyper_tot)
 
 ## And fitting
-dataset = juliet.load(priors=priors, t_lc=tim, y_lc=fl, yerr_lc=fle, out_folder=os.getcwd() + '/Analysis/White_light')
-res = dataset.fit(sampler = 'dynesty')
+dataset = juliet.load(priors=priors, t_lc=tim, y_lc=fl, yerr_lc=fle, out_folder=os.getcwd() + '/Analysis/White_light1')
+res = dataset.fit(sampler = 'dynesty', nthreads=4)
 
 # Some plots
 model = res.lc.evaluate(instrument)
