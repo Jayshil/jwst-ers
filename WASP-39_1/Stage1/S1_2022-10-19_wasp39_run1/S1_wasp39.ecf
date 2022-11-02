@@ -6,7 +6,7 @@ suffix              uncal
 
 # Control ramp fitting method
 ramp_fit_algorithm  'default'   #Options are 'default', 'mean', or 'differenced'
-ramp_fit_max_cores  'none'  #Options are 'none', quarter', 'half','all'
+ramp_fit_max_cores  'half'  #Options are 'none', quarter', 'half','all'
 
 # Pipeline stages
 skip_group_scale    False
@@ -26,11 +26,11 @@ skip_gain_scale     False
 jump_rejection_threshold  4.0 #float, default is 4.0, CR sigma rejection threshold
 
 # Project directory
-topdir              /home/User
+topdir              /Users/japa6985/Documents/JWST/jwst-ers/
 
 # Directories relative to topdir
-inputdir            /Data/JWST-Sim/NIRSpec/Uncalibrated
-outputdir           /Data/JWST-Sim/NIRSpec/Stage1
+inputdir		/Data/S0	
+outputdir           /WASP-39_1/Stage1
 
 # Diagnostics
 testing_S1          False

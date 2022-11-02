@@ -16,19 +16,19 @@ ncol            4  # The number of columns you want in your LaTeX formatted tabl
 
 # This section is relevant if isplots_S6>=3
 # Scale height parameters (if you want a second copy of the plot with a second y-axis with units of scale height)
-star_Rad        0.6506 # The radius of the star in units of solar radii
-planet_Teq      1400   # The equilibrium temperature of the planet in units of Kelvin
-planet_Mass     2      # The planet's mass in units of Jupiter masses (used to calculate surface gravity)
+star_Rad        0.939 # The radius of the star in units of solar radii
+planet_Teq      1166   # The equilibrium temperature of the planet in units of Kelvin
+planet_Mass     0.281      # The planet's mass in units of Jupiter masses (used to calculate surface gravity)
 planet_Rad      None   # The planet's radius in units of Jupiter radii (used to calculate surface gravity); Set to None to use the average fitted radius
 planet_mu       2.3    # The mean molecular mass of the atmosphere (in atomic mass units)
 planet_R0       None   # The reference radius (in Jupiter radii) for the scale height measurement; Set to None to use the mean fitted radius
 
 # Diagnostics
 isplots_S6      5      # Generate few (1), some (3), or many (5) figures (Options: 1 - 5)
-hide_plots      False  # If True, plots will automatically be closed rather than popping up
+hide_plots      True  # If True, plots will automatically be closed rather than popping up
 
 # Project directory
-topdir          /home/User/
+topdir          /Users/japa6985/Documents/JWST/jwst-ers/WASP-39_1
 
 # Model to plot underneath the fitted data points
 model_spectrum  None   # Path to the model spectrum relative to topdir. Set to None if no model should be plotted.
@@ -39,5 +39,5 @@ model_zorder    0      # The zorder of the model on the plot (0 for beneath the 
 model_delimiter None   # Delimiter between columns. Typical options: None (for space), ',' for comma
 
 # Directories relative to topdir
-inputdir        /Data/JWST-Sim/NIRSpec/Stage5/   # The folder containing the outputs from Eureka!'s S5 pipeline (will be overwritten if calling S5 and S6 sequentially)
-outputdir       /Data/JWST-Sim/NIRSpec/Stage6/
+inputdir        /Stage5   # The folder containing the outputs from Eureka!'s S5 pipeline (will be overwritten if calling S5 and S6 sequentially)
+outputdir       /Stage6

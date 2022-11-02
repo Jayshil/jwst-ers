@@ -27,7 +27,7 @@ calib_level = [2]
 subgroup = 'RATEINTS'
 
 # Temporary download directory will be 'download_dir'/mastDownload/...
-download_dir = os.getcwd() + '/WASP-39/Data'
+download_dir = os.getcwd() + '/WASP-39_1/Data'
 
 # Final destination of files after calling mast.consolidate
 final_dir = download_dir + '/S1'
