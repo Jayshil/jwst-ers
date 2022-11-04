@@ -57,7 +57,7 @@ testing_model   False   # Boolean, set True to only inject a model source of sys
 hide_plots      True   # If True, plots will automatically be closed rather than popping up
 
 # Project directory
-topdir          /Users/japa6985/Documents/JWST/jwst-ers/WASP-39_1
+topdir          /Users/japa6985/Documents/JWST/jwst-ers/WASP-39_2
 
 # Directories relative to topdir
 inputdir        /Stage4   # The folder containing the outputs from Eureka!'s S4 pipeline (will be overwritten if calling S4 and S5 sequentially)

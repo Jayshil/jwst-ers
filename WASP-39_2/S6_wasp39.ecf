@@ -28,7 +28,7 @@ isplots_S6      5      # Generate few (1), some (3), or many (5) figures (Option
 hide_plots      True  # If True, plots will automatically be closed rather than popping up
 
 # Project directory
-topdir          /Users/japa6985/Documents/JWST/jwst-ers/WASP-39_1
+topdir          /Users/japa6985/Documents/JWST/jwst-ers/WASP-39_2
 
 # Model to plot underneath the fitted data points
 model_spectrum  None   # Path to the model spectrum relative to topdir. Set to None if no model should be plotted.

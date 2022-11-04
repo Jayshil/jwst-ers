@@ -23,3 +23,14 @@ def outlier_removal(tims, flx, flxe, clip=3.5):
     for i in range(len(tim_outliers)):
         msk2[np.where(tims == tim_outliers[i])[0]] = False
     return msk2
+
+def outlier_removal_ycen(ycen, clip=3.5):
+    sc = SigmaClip(sigma_upper=clip, sigma_lower=clip, stdfunc=mad_std, maxiters=None)
+    msk1 = sc(ycen).mask
+
+    loc_out = ycen[msk1]
+
+    msk2 = np.ones(len(ycen), dtype=bool)
+    for i in range(len(loc_out)):
+        msk2[np.where(ycen == loc_out[i])[0]] = False
+    return msk2

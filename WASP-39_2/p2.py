@@ -6,7 +6,7 @@ import os
 import utils as utl
 import matplotlib.gridspec as gd
 
-f1 = h5py.File(os.getcwd() + '/Stage4/S4_2022-10-31_wasp39_run1/ap6_bg9/S4_wasp39_ap6_bg9_LCData.h5')
+f1 = h5py.File(os.getcwd() + '/Stage4/S4_2022-11-03_wasp39_run2/ap6_bg9/S4_wasp39_ap6_bg9_LCData.h5')
 instruments = np.array([])
 for i in range(len(f1['wave_mid'])):
     instruments = np.hstack((instruments,'CH' + str(i)))
@@ -34,8 +34,7 @@ for i in range(len(instruments)):
     tim[instruments[i]], fl[instruments[i]], fle[instruments[i]] = tim7, fl7, fle7
     gp_pars[instruments[i]] = tim7
     # Linear parameters
-    tim_mid = tim7[0] + ((tim7[-1]-tim7[0])/2)
-    lins = np.vstack([tim7-tim_mid])
+    lins = np.vstack([tim7])
     lin_pars[instruments[i]] = np.transpose(lins)
 
 # Some planetary parameters
@@ -76,18 +75,17 @@ for i in range(len(instruments)):
     dist_lin.append('uniform')
     hyper_lin.append([-1., 1.])
 ### Total
-par_tot = par_P + par_ps_ldcs + par_ins + par_gp + par_lin
-dist_tot = dist_P + dist_ps_ldcs + dist_ins + dist_gp + dist_lin
-hyper_tot = hyper_P + hyper_ps_ldcs + hyper_ins + hyper_gp + hyper_lin
+par_tot = par_P + par_ps_ldcs + par_ins# + par_gp + par_lin
+dist_tot = dist_P + dist_ps_ldcs + dist_ins# + dist_gp + dist_lin
+hyper_tot = hyper_P + hyper_ps_ldcs + hyper_ins# + hyper_gp + hyper_lin
 
 priors = juliet.utils.generate_priors(par_tot, dist_tot, hyper_tot)
 
-print('Okay')
 ## And fitting
-dataset = juliet.load(priors=priors, t_lc=tim, y_lc=fl, yerr_lc=fle, GP_regressors_lc=gp_pars,\
-    linear_regressors_lc=lin_pars, out_folder=os.getcwd() + '/Analysis/Spectra')
-print('Ohhh')
-res = dataset.fit(sampler = 'dynesty', nthreads=4)
+#dataset = juliet.load(priors=priors, t_lc=tim, y_lc=fl, yerr_lc=fle, GP_regressors_lc=gp_pars,\
+#    linear_regressors_lc=lin_pars, out_folder=os.getcwd() + '/Analysis/Spectra')
+dataset = juliet.load(priors=priors, t_lc=tim, y_lc=fl, yerr_lc=fle, out_folder=os.getcwd() + '/Analysis/Spectra')
+res = dataset.fit(sampler = 'dynesty', nthreads=8)
 
 for i in range(len(instruments)):
     instrument = instruments[i]

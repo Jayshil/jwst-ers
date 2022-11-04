@@ -6,15 +6,18 @@ import os
 import utils as utl
 import matplotlib.gridspec as gd
 
-f1 = h5py.File(os.getcwd() + '/Stage4/S4_2022-11-01_wasp39_run1/ap6_bg9/S4_wasp39_ap6_bg9_LCData.h5')
-tim7, fl7, fle7 = np.asarray(f1['time']), np.asarray(f1['flux_white']), np.asarray(f1['err_white'])
-tim7 = tim7 + 2400000.5
+f1 = h5py.File(os.getcwd() + '/Stage4/S4_2022-11-03_wasp39_run1/ap6_bg9/S4_wasp39_ap6_bg9_LCData.h5')
+tim9, fl9, fle9, ycen9 = np.asarray(f1['time']), np.asarray(f1['flux_white']), np.asarray(f1['err_white']), np.asarray(f1['centroid_y'])
+tim9 = tim9 + 2400000.5
 # Removing Nan values
-tim7, fl7, fle7 = tim7[~np.isnan(fl7)], fl7[~np.isnan(fl7)], fle7[~np.isnan(fl7)]
+tim7, fl7, fle7, ycen7 = tim9[~np.isnan(fl9)], fl9[~np.isnan(fl9)], fle9[~np.isnan(fl9)], ycen9[~np.isnan(fl9)]
 
 # Outlier removal
-msk1 = utl.outlier_removal(tim7, fl7, fle7, clip=10)
-tim7, fl7, fle7 = tim7[msk1], fl7[msk1], fle7[msk1]
+## For ycen
+msk1 = utl.outlier_removal_ycen(ycen7)
+tim7, fl7, fle7, ycen7 = tim7[msk1], fl7[msk1], fle7[msk1], ycen7[msk1]
+msk2 = utl.outlier_removal(tim7, fl7, fle7, clip=10)
+tim7, fl7, fle7 = tim7[msk2], fl7[msk2], fle7[msk2]
 
 # Normalizing the lightcurve
 tim7, fl7, fle7 = tim7, fl7/np.median(fl7), fle7/np.median(fl7)
@@ -35,8 +38,7 @@ tim, fl, fle = {}, {}, {}
 gp_pars, lin_pars = {}, {}
 tim[instrument], fl[instrument], fle[instrument] = tim7, fl7, fle7
 gp_pars[instrument] = tim7
-tim_mid = tim7[0] + ((tim7[-1]-tim7[0])/2)
-lins = np.vstack([tim7-tim_mid])
+lins = np.vstack([tim7])
 lin_pars[instrument] = np.transpose(lins)
 
 ## Priors
