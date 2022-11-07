@@ -7,19 +7,20 @@ import utils as utl
 import matplotlib.gridspec as gd
 from gpcheops.utils import corner_plot
 
-pin = os.getcwd() + '/WASP-39_4/Stage4/S4_2022-11-03_wasp39_run1/ap7_bg9'
+pin = os.getcwd() + '/WASP-39_4/Stage4/S4_2022-11-07_wasp39_run2/ap7_bg9'
 pout = os.getcwd() + '/WASP-39_4/Analysis/Spectra_ind'
 
-f1 = h5py.File(pin + '/S4_wasp39_ap6_bg9_LCData.h5')
+f1 = h5py.File(pin + '/S4_wasp39_ap7_bg9_LCData.h5')
 instruments = np.array([])
 for i in range(len(f1['wave_mid'])):
     instruments = np.hstack((instruments,'CH' + str(i)))
 
 # Planetary parameters
-per, per_err = 4.05527892                      # Ivshina & Winn 2022
-ar = 11.55                                     # Fixed from white-light analysis
-bb = 0.447                                     # Fixed from white-light analysis
-tc1 = 2456401.39763                            # Fixed from white-light analysis
+per = 4.05527892                               # Ivshina & Winn 2022
+ar = 11.3535042768                             # Fixed from white-light analysis
+bb = 0.4528981002                              # Fixed from white-light analysis
+tc1 = 2459771.3355443380                       # Fixed from white-light analysis
+q1, q2 = 0.0691207538, 0.1229216390            # Fixed from white-light analysis
 
 for i in range(len(instruments)):
     # Making data
@@ -33,6 +34,8 @@ for i in range(len(instruments)):
     ## Outlier removal: time
     msk2 = utl.outlier_removal(tim7, fl7, fle7, clip=10)
     tim7, fl7, fle7 = tim7[msk2], fl7[msk2], fle7[msk2]
+    # Normalizing the lightcurve
+    tim7, fl7, fle7 = tim7, fl7/np.median(fl7), fle7/np.median(fl7)
     # Data that juliet understand
     tim, fl, fle, lin_pars = {}, {}, {}, {}
     tim[instruments[i]], fl[instruments[i]], fle[instruments[i]] = tim7, fl7, fle7
@@ -40,8 +43,8 @@ for i in range(len(instruments)):
     # Priors
     ## Planetary priros
     par_P = ['P_p1', 't0_p1', 'p_p1_' + instruments[i], 'b_p1', 'q1_' + instruments[i], 'q2_' + instruments[i], 'ecc_p1', 'omega_p1', 'a_p1']
-    dist_P = ['fixed', 'fixed', 'uniform', 'fixed', 'uniform', 'uniform', 'fixed', 'fixed', 'fixed']
-    hyper_P = [per, tc1, [0., 1.], bb, [0., 1.], [0., 1.], 0., 90., ar]
+    dist_P = ['fixed', 'fixed', 'uniform', 'fixed', 'truncatednormal', 'truncatednormal', 'fixed', 'fixed', 'fixed']
+    hyper_P = [per, tc1, [0., 1.], bb, [q1, 0.05, 0., 1.], [q2, 0.05, 0., 1.], 0., 90., ar]
     ## Instrumental priors
     par_ins = ['mflux_' + instruments[i], 'mdilution_' + instruments[i], 'sigma_w_' + instruments[i]]
     dist_ins = ['normal', 'fixed', 'loguniform']
@@ -83,6 +86,6 @@ for i in range(len(instruments)):
     ax2.set_xlabel('Time (BJD)')
     ax2.set_xlim(np.min(tim[instrument]), np.max(tim[instrument]))
 
-    plt.savefig(pout + instruments[i] + '/full_model.png')
+    plt.savefig(pout + '/' + instruments[i] + '/full_model.png')
 
-    corner_plot(pout + instruments[i], False)
+    corner_plot(pout + '/' + instruments[i], False)

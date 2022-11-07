@@ -9,8 +9,8 @@ from gpcheops.utils import corner_plot
 
 # This file is to analyse white light curve
 
-pin = os.getcwd() + '/WASP-39_4/Stage4/S4_2022-11-07_wasp39_run1/ap7_bg9'
-pout = os.getcwd() + '/WASP-39_4/Analysis/White-Light'
+pin = os.getcwd() + '/WASP-39_4/Stage4/S4_2022-11-07_wasp39_run2/ap7_bg9'
+pout = os.getcwd() + '/WASP-39_4/Analysis/White-Light1'
 
 f1 = h5py.File(pin + '/S4_wasp39_ap7_bg9_LCData.h5')
 tim9, fl9, fle9, ycen9 = np.asarray(f1['time']), np.asarray(f1['flux_white']), np.asarray(f1['err_white']), np.asarray(f1['centroid_y'])
