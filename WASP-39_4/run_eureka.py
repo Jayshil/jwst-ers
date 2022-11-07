@@ -20,7 +20,7 @@ eventlabel = 'wasp39'
 ecf_path = '.'+os.sep
 
 if __name__ == '__main__':
-    #s1_meta = s1.rampfitJWST(eventlabel, ecf_path=ecf_path)
+    s1_meta = s1.rampfitJWST(eventlabel, ecf_path=ecf_path)
 
     s2_meta = s2.calibrateJWST(eventlabel, ecf_path=ecf_path)
 
