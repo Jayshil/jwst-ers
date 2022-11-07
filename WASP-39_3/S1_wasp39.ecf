@@ -18,7 +18,7 @@ skip_refpix         False
 skip_linearity      False
 skip_persistence    True    #Skipped by default for Near-IR TSO
 skip_dark_current   False
-skip_jump           False
+skip_jump           True
 skip_ramp_fitting   False
 skip_gain_scale     False
 
@@ -41,9 +41,9 @@ grouplevel_bg 		True
 ncpu				4
 bg_y1 				6
 bg_y2 				26
-bg_y_width          [None, None] # bkg from y[bg_y1-1-bg_y_width[0]: bg_y1-1] and y[bg_y2 + 1, bg_y2 + 1 + bg_y_width[1]]. ignored if None, can be [None, 4] or [4, None]  
+bg_y_width          [4, 4] # bkg from y[bg_y1-1-bg_y_width[0]: bg_y1-1] and y[bg_y2 + 1, bg_y2 + 1 + bg_y_width[1]]. ignored if None, can be [None, 4] or [4, None]  
 bg_deg 				0 
-p3thresh			5
+p3thresh			3
 verbose				True
 isplots 			1
 isplots_S3 			False  #calling a S3 function requires this separate input
