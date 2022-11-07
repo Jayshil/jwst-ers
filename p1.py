@@ -5,8 +5,14 @@ import juliet
 import os
 import utils as utl
 import matplotlib.gridspec as gd
+from gpcheops.utils import corner_plot
 
-f1 = h5py.File(os.getcwd() + '/Stage4/S4_2022-11-03_wasp39_run1/ap6_bg9/S4_wasp39_ap6_bg9_LCData.h5')
+# This file is to analyse white light curve
+
+pin = os.getcwd() + '/WASP-39_4/Stage4/S4_2022-11-07_wasp39_run1/ap7_bg9'
+pout = os.getcwd() + '/WASP-39_4/Analysis/White-Light'
+
+f1 = h5py.File(pin + '/S4_wasp39_ap7_bg9_LCData.h5')
 tim9, fl9, fle9, ycen9 = np.asarray(f1['time']), np.asarray(f1['flux_white']), np.asarray(f1['err_white']), np.asarray(f1['centroid_y'])
 tim9 = tim9 + 2400000.5
 # Removing Nan values
@@ -38,7 +44,7 @@ tim, fl, fle = {}, {}, {}
 gp_pars, lin_pars = {}, {}
 tim[instrument], fl[instrument], fle[instrument] = tim7, fl7, fle7
 gp_pars[instrument] = tim7
-lins = np.vstack([tim7])
+lins = np.vstack([tim7-tim7[0], (tim7-tim7[0])**2])
 lin_pars[instrument] = np.transpose(lins)
 
 ## Priors
@@ -49,26 +55,25 @@ hyper_P = [per, [np.median(tc1), np.std(tc1)], [0., 1.], [bb, bb_err], [0., 1.],
 ### Instrumental parameters
 par_ins = ['mflux_' + instrument, 'mdilution_' + instrument, 'sigma_w_' + instrument]
 dist_ins = ['normal', 'fixed', 'loguniform']
-hyper_ins = [[0., 0.5], 1., [0.1, 1000000.]]
+hyper_ins = [[0., 0.5], 1., [0.1, 10000.]]
 ### GP parameters
 par_gp = ['GP_sigma_' + instrument, 'GP_timescale_' + instrument, 'GP_rho_' + instrument]
 dist_gp = ['loguniform', 'loguniform', 'loguniform']
 hyper_gp = [[1e-5, 10000.], [1e-3,1e2], [1e-3,1e2]]
 ### Linear parameters
-par_lin = ['theta0_' + instrument]
-dist_lin = ['uniform']
-hyper_lin = [[-3., 3.]]
+par_lin = ['theta0_' + instrument, 'theta1_' + instrument]
+dist_lin = ['uniform', 'uniform']
+hyper_lin = [[-3., 3.], [-3., 3.]]
 
 ### Total
-par_tot = par_P + par_ins + par_gp + par_lin
-dist_tot = dist_P + dist_ins + dist_gp + dist_lin
-hyper_tot = hyper_P + hyper_ins + hyper_gp + hyper_lin
+par_tot = par_P + par_ins + par_lin
+dist_tot = dist_P + dist_ins + dist_lin
+hyper_tot = hyper_P + hyper_ins + hyper_lin
 
 priors = juliet.utils.generate_priors(par_tot, dist_tot, hyper_tot)
 
 ## And fitting
-dataset = juliet.load(priors=priors, t_lc=tim, y_lc=fl, yerr_lc=fle, GP_regressors_lc=tim,\
-    linear_regressors_lc=lin_pars, out_folder=os.getcwd() + '/Analysis/White_light')
+dataset = juliet.load(priors=priors, t_lc=tim, y_lc=fl, yerr_lc=fle, linear_regressors_lc=lin_pars, out_folder=pout)
 res = dataset.fit(sampler = 'dynesty', nthreads=4)
 
 # Some plots
@@ -94,4 +99,6 @@ ax2.set_ylabel('Residuals (ppm)')
 ax2.set_xlabel('Time (BJD)')
 ax2.set_xlim(np.min(tim[instrument]), np.max(tim[instrument]))
 
-plt.savefig(os.getcwd() + '/Analysis/White_light/full_model.png')
+plt.savefig(pout + '/full_model.png')
+
+corner_plot(pout, False)

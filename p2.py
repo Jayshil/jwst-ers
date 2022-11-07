@@ -5,8 +5,12 @@ import juliet
 import os
 import utils as utl
 import matplotlib.gridspec as gd
+from pathlib import Path
 
-f1 = h5py.File(os.getcwd() + '/Stage4/S4_2022-11-03_wasp39_run2/ap6_bg9/S4_wasp39_ap6_bg9_LCData.h5')
+pin = os.getcwd() + '/WASP-39_4/Stage4/S4_2022-11-07_wasp39_run1/ap7_bg9'
+pout = os.getcwd() + '/WASP-39_4/Analysis/Spectra_all'
+
+f1 = h5py.File(pin + '/S4_wasp39_ap7_bg9_LCData.h5')
 instruments = np.array([])
 for i in range(len(f1['wave_mid'])):
     instruments = np.hstack((instruments,'CH' + str(i)))
@@ -84,8 +88,12 @@ priors = juliet.utils.generate_priors(par_tot, dist_tot, hyper_tot)
 ## And fitting
 #dataset = juliet.load(priors=priors, t_lc=tim, y_lc=fl, yerr_lc=fle, GP_regressors_lc=gp_pars,\
 #    linear_regressors_lc=lin_pars, out_folder=os.getcwd() + '/Analysis/Spectra')
-dataset = juliet.load(priors=priors, t_lc=tim, y_lc=fl, yerr_lc=fle, out_folder=os.getcwd() + '/Analysis/Spectra')
+dataset = juliet.load(priors=priors, t_lc=tim, y_lc=fl, yerr_lc=fle, out_folder=pout)
 res = dataset.fit(sampler = 'dynesty', nthreads=8)
+
+path_plots = Path(pout + '/Plots')
+if not path_plots.exists():
+    os.mkdir(pout + '/Plots')
 
 for i in range(len(instruments)):
     instrument = instruments[i]
@@ -112,4 +120,4 @@ for i in range(len(instruments)):
     ax2.set_xlabel('Time (BJD)')
     ax2.set_xlim(np.min(tim[instrument]), np.max(tim[instrument]))
 
-    plt.savefig(os.getcwd() + '/Analysis/Spectra/Plots/full_model_' + instrument + '.png')
+    plt.savefig(pout + '/Plots/full_model_' + instrument + '.png')
