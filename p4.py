@@ -18,7 +18,7 @@ wav = np.asarray(f1['wave_mid'])
 wav_h, wav_l = np.asarray(f1['wave_hi']), np.asarray(f1['wave_low'])
 wav_err = (wav_h - wav_l)/2
 
-#wav, wav_err = wav[0:len(lst)], wav_err[0:len(lst)]
+wav, wav_err = wav[0:len(lst)], wav_err[0:len(lst)]
 
 # Retrieving (Rp/R*)^2 from each analysis
 dep, dep_uerr, dep_derr = np.ones(len(lst)), np.ones(len(lst)), np.ones(len(lst))
