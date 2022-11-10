@@ -25,7 +25,7 @@ q1, q2 = 0.0691207538, 0.1229216390            # Fixed from white-light analysis
 for i in range(len(instruments)):
     # Making data
     tim7, fl7, fle7, ycen7 = np.asarray(f1['time']), np.asarray(f1['data'][i]), np.asarray(f1['err'][i]), np.asarray(f1['centroid_y'])
-    tim7 = tim7 + 2400000.5 + 0.0008578943306929432
+    tim7 = tim7 + 2400000.5# + 0.0008578943306929432
     # Removing nans
     tim7, fl7, fle7, ycen7 = tim7[~np.isnan(fl7)], fl7[~np.isnan(fl7)], fle7[~np.isnan(fl7)], ycen7[~np.isnan(fl7)]
     ## Outlier removal: ycen

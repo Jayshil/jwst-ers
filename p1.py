@@ -14,7 +14,7 @@ pout = os.getcwd() + '/WASP-39_4/Analysis/White-Light1'
 
 f1 = h5py.File(pin + '/S4_wasp39_ap7_bg9_LCData.h5')
 tim9, fl9, fle9, ycen9 = np.asarray(f1['time']), np.asarray(f1['flux_white']), np.asarray(f1['err_white']), np.asarray(f1['centroid_y'])
-tim9 = tim9 + 2400000.5 + 0.0008578943306929432
+tim9 = tim9 + 2400000.5# + 0.0008578943306929432
 # Removing Nan values
 tim7, fl7, fle7, ycen7 = tim9[~np.isnan(fl9)], fl9[~np.isnan(fl9)], fle9[~np.isnan(fl9)], ycen9[~np.isnan(fl9)]
 
