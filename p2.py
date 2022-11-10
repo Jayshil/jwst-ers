@@ -22,12 +22,12 @@ gp_pars, lin_pars = {}, {}
 for i in range(len(instruments)):
     if instruments[i] != 'WHITE':
         tim7, fl7, fle7 = np.asarray(f1['time']), np.asarray(f1['data'][i]), np.asarray(f1['err'][i])
-        tim7 = tim7 + 2400000.5
+        tim7 = tim7 + 2400000.5 + 0.0008578943306929432
         # Removing nans
         tim7, fl7, fle7 = tim7[~np.isnan(fl7)], fl7[~np.isnan(fl7)], fle7[~np.isnan(fl7)]
     else:
         tim7, fl7, fle7 = np.asarray(f1['time']), np.asarray(f1['flux_white']), np.asarray(f1['err_white'])
-        tim7 = tim7 + 2400000.5
+        tim7 = tim7 + 2400000.5 + 0.0008578943306929432
         # Removing Nan values
         tim7, fl7, fle7 = tim7[~np.isnan(fl7)], fl7[~np.isnan(fl7)], fle7[~np.isnan(fl7)]
     # Outlier removal
