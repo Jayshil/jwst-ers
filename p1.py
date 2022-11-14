@@ -56,10 +56,6 @@ hyper_P = [per, [np.median(tc1), np.std(tc1)], [0., 1.], [bb, bb_err], [0., 1.],
 par_ins = ['mflux_' + instrument, 'mdilution_' + instrument, 'sigma_w_' + instrument]
 dist_ins = ['normal', 'fixed', 'loguniform']
 hyper_ins = [[0., 0.5], 1., [0.1, 10000.]]
-### GP parameters
-par_gp = ['GP_sigma_' + instrument, 'GP_timescale_' + instrument, 'GP_rho_' + instrument]
-dist_gp = ['loguniform', 'loguniform', 'loguniform']
-hyper_gp = [[1e-5, 10000.], [1e-3,1e2], [1e-3,1e2]]
 ### Linear parameters
 par_lin = ['theta0_' + instrument, 'theta1_' + instrument]
 dist_lin = ['uniform', 'uniform']
