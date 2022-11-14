@@ -15,7 +15,7 @@ eureka.lib.plots.set_rc(style='eureka', usetex=False, filetype='.png')
 
 # eventlabel = 'imaging_template'
 # eventlabel = 'miri_lrs_template'
-eventlabel = 'nirspec_fs_template'
+eventlabel = 'wasp39'
 # eventlabel = 'nircam_wfss_template'
 ecf_path = '.'+os.sep
 
