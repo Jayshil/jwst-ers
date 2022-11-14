@@ -3,7 +3,7 @@
 # Stage 4 Documentation: https://eurekadocs.readthedocs.io/en/latest/ecf.html#stage-4
 
 # Number of spectroscopic channels spread evenly over given wavelength range
-nspecchan       30           # Number of spectroscopic channels spread evenly over given wavelength range. Set to None to leave the spectrum unbinned.
+nspecchan       None           # Number of spectroscopic channels spread evenly over given wavelength range. Set to None to leave the spectrum unbinned.
 compute_white   True        # Also compute the white-light lightcurve 
 wave_min        3.0         # Minimum wavelength. Set to None to use the shortest extracted wavelength from Stage 3.
 wave_max        5.3         # Maximum wavelength. Set to None to use the longest extracted wavelength from Stage 3.
@@ -49,7 +49,7 @@ hide_plots      True   # If True, plots will automatically be closed rather than
 verbose         True    # If True, more details will be printed about steps
 
 # Project directory
-topdir          /Users/japa6985/Documents/JWST/jwst-ers/WASP-39_4
+topdir          /Users/japa6985/Documents/JWST/jwst-ers/WASP-39_5
 
 # Directories relative to topdir
 inputdir        /Stage3    # The folder containing the outputs from Eureka!'s S3 or JWST's S3 pipeline (will be overwritten if calling S3 and S4 sequentially)

@@ -35,7 +35,7 @@ testing_S2              False
 hide_plots              True   # If True, plots will automatically be closed rather than popping up
 
 # Project directory
-topdir                  /Users/japa6985/Documents/JWST/jwst-ers/WASP-39_4
+topdir                  /Users/japa6985/Documents/JWST/jwst-ers/WASP-39_5/
 
 # Directories relative to topdir
 inputdir                /Stage1
