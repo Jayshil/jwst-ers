@@ -14,7 +14,7 @@ skip_dq_init        False
 skip_saturation     False
 skip_ipc            True    #Skipped by default for all instruments
 skip_superbias      False
-skip_refpix         False
+skip_refpix         True
 skip_linearity      False
 skip_persistence    True    #Skipped by default for Near-IR TSO
 skip_dark_current   False
@@ -55,9 +55,9 @@ ignore_low          None
 ignore_hi			None
 
 #manual reference pixel correction for PRISM
-refpix_corr      False
-npix_top         4
-npix_bot         4
+refpix_corr      True
+npix_top         8
+npix_bot         8
 
 # Project directory
 topdir              /Users/japa6985/Documents/JWST/jwst-ers/
