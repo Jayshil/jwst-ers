@@ -9,7 +9,7 @@ import os
 proposal_id = 1366
 
 # Observation number
-observation = 4
+observation = 2
 
 # Visit number
 visit = 1
@@ -17,20 +17,20 @@ visit = 1
 # Calibration level, list
 # (0 = raw, 1 = uncalibrated, 2 = calibrated, 3 = science product,
 # 4 = contributed science product)
-calib_level = [2]
+calib_level = [1]
 
 # FITS file type, varies by calib_level.
 # 1: UNCAL, GS-ACQ1, GS-ACQ2, GS-FG, GS-ID, GS-TRACK
 # 2: CAL, CALINTS, RATE, RATEINTS, X1DINTS, ANNNN_CRFINTS,
 # GS-ACQ1, GS-ACQ2, GS-FG, GS-ID, GS-TRACK, RAMP
 # 3: X1DINTS, WHTLT
-subgroup = 'RATEINTS'
+subgroup = 'UNCAL'
 
 # Temporary download directory will be 'download_dir'/mastDownload/...
-download_dir = os.getcwd() + '/WASP-39_1/Data'
+download_dir = os.getcwd() + '/Data'
 
 # Final destination of files after calling mast.consolidate
-final_dir = download_dir + '/S1'
+final_dir = download_dir + '/S1_NIRCam'
 
 # MAST API token for accessing data with exclusive access
 # This can be generated at https://auth.mast.stsci.edu/token
