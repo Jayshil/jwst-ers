@@ -32,7 +32,7 @@ for i in range(len(instruments)):
     msk1 = utl.outlier_removal_ycen(ycen7)
     tim7, fl7, fle7, ycen7 = tim7[msk1], fl7[msk1], fle7[msk1], ycen7[msk1]
     ## Outlier removal: time
-    msk2 = utl.outlier_removal(tim7, fl7, fle7, clip=10)
+    msk2 = utl.outlier_removal(tim7, fl7, fle7, clip=5)
     tim7, fl7, fle7 = tim7[msk2], fl7[msk2], fle7[msk2]
     # Normalizing the lightcurve
     tim7, fl7, fle7 = tim7, fl7/np.median(fl7), fle7/np.median(fl7)

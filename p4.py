@@ -7,13 +7,13 @@ import h5py
 from glob import glob
 from utils import natural_keys
 
-pout = os.getcwd() + '/WASP-39_4/Analysis/Spectra_ind'
+pout = os.getcwd() + '/WASP-39_NC/Analysis/Spectra_ind_100'
 lst = os.listdir(pout)
 #lst.remove('.DS_Store')
 lst.sort(key = natural_keys)
 
 # Wavelengths
-f1 = h5py.File(os.getcwd() + '/WASP-39_4/Stage4/S4_2022-11-07_wasp39_run1/ap7_bg9/S4_wasp39_ap7_bg9_LCData.h5')
+f1 = h5py.File(os.getcwd() + '/WASP-39_NC/Stage4/S4_2022-11-14_wasp39_run3/ap8_bg20/S4_wasp39_ap8_bg20_LCData.h5')
 wav = np.asarray(f1['wave_mid'])
 wav_h, wav_l = np.asarray(f1['wave_hi']), np.asarray(f1['wave_low'])
 wav_err = (wav_h - wav_l)/2
@@ -34,7 +34,13 @@ for i in range(len(lst)):
     qua_dep = juliet.utils.get_quantiles(dep1)
     dep[i], dep_uerr[i], dep_derr[i] = qua_dep[0], qua_dep[1]-qua_dep[0], qua_dep[0]-qua_dep[2]
 
-wav, wav_err, dep, dep_derr, dep_uerr = wav[:-5], wav_err[:-5], dep[:-5], dep_derr[:-5], dep_uerr[:-5]
+#wav, wav_err, dep, dep_derr, dep_uerr = wav[:-5], wav_err[:-5], dep[:-5], dep_derr[:-5], dep_uerr[:-5]
+dep_avg_err = (dep_derr + dep_uerr)/2
+dep_err_med = np.median(dep_avg_err)
+dep_err_std = np.std(dep_avg_err)
+
+msk = np.where(dep_avg_err < (dep_err_med + (2*dep_err_std)))[0]
+wav, wav_err, dep, dep_derr, dep_uerr = wav[msk], wav_err[msk], dep[msk], dep_derr[msk], dep_uerr[msk]
 
 plt.figure(figsize=(16/1.5, 9/1.5))
 plt.errorbar(wav, dep, xerr=wav_err, yerr=[dep_derr, dep_uerr], fmt='o', c='orangered', mfc='white')
