@@ -49,3 +49,5 @@ plt.ylabel(r'$(R_p/R_\star)^2$ (in ppm)')
 plt.grid()
 plt.show()
 #plt.savefig(pout + '/Spectrum.png', dpi=100)
+
+print(np.median(dep_avg_err))
