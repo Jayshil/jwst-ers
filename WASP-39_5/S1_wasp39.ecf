@@ -56,8 +56,8 @@ ignore_hi			None
 
 #manual reference pixel correction for PRISM
 refpix_corr      True
-npix_top         8
-npix_bot         8
+npix_top         5
+npix_bot         5
 
 # Project directory
 topdir              /Users/japa6985/Documents/JWST/jwst-ers/
