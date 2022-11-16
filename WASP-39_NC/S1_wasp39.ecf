@@ -14,11 +14,11 @@ skip_dq_init        False
 skip_saturation     False
 skip_ipc            True    #Skipped by default for all instruments
 skip_superbias      False
-skip_refpix         True
+skip_refpix         False
 skip_linearity      False
 skip_persistence    True    #Skipped by default for Near-IR TSO
 skip_dark_current   False
-skip_jump           False
+skip_jump           True
 skip_ramp_fitting   False
 skip_gain_scale     False
 
@@ -55,15 +55,15 @@ ignore_low          600
 ignore_hi						None
 
 #manual reference pixel correction for PRISM
-refpix_corr      True
-npix_top         None
-npix_bot         4
+refpix_corr      False
+npix_top         8
+npix_bot         8
 
 # Project directory
 topdir              /Users/japa6985/Documents/JWST/jwst-ers/
 
 # Directories relative to topdir
-inputdir            /Data/S0_NIRCam
+inputdir		    /Data/S0_NIRCam	
 outputdir           /WASP-39_NC/Stage1
 
 # Diagnostics
