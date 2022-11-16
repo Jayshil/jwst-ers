@@ -18,12 +18,12 @@ skip_refpix         False
 skip_linearity      False
 skip_persistence    True    #Skipped by default for Near-IR TSO
 skip_dark_current   False
-skip_jump           True
+skip_jump           False
 skip_ramp_fitting   False
 skip_gain_scale     False
 
 #Pipeline stages parameters
-jump_rejection_threshold  4.0 #float, default is 4.0, CR sigma rejection threshold
+jump_rejection_threshold  10.0 #float, default is 4.0, CR sigma rejection threshold
 
 #Custom bias frames
 custom_bias         False
@@ -39,8 +39,8 @@ dq_sat_columns	    [[0, 0], [0,0], [0,0], [0,0], [0,0]]  #for dq_sat_mode = defi
 #Background subtraction
 grouplevel_bg 		True
 ncpu				4
-bg_y1 				20
-bg_y2 				50
+bg_y1 				10
+bg_y2 				70
 bg_deg 				1 
 p3thresh			3
 verbose				True
