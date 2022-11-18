@@ -7,13 +7,13 @@ import h5py
 from glob import glob
 from utils import natural_keys
 
-pout = os.getcwd() + '/WASP-39_NC/Analysis/Spectra_ind_100'
+pout = os.getcwd() + '/WASP-39_NC/Analysis/Spectra_ind_114'
 lst = os.listdir(pout)
 #lst.remove('.DS_Store')
 lst.sort(key = natural_keys)
 
 # Wavelengths
-f1 = h5py.File(os.getcwd() + '/WASP-39_NC/Stage4/S4_2022-11-14_wasp39_run3/ap8_bg20/S4_wasp39_ap8_bg20_LCData.h5')
+f1 = h5py.File(os.getcwd() + '/WASP-39_NC/Stage4/S4_2022-11-16_wasp39_run1/ap8_bg20/S4_wasp39_ap8_bg20_LCData.h5')
 wav = np.asarray(f1['wave_mid'])
 wav_h, wav_l = np.asarray(f1['wave_hi']), np.asarray(f1['wave_low'])
 wav_err = (wav_h - wav_l)/2

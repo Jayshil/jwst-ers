@@ -9,10 +9,10 @@ from gpcheops.utils import corner_plot
 
 # This file is to analyse white light curve
 
-pin = os.getcwd() + '/WASP-39_4/Stage4/S4_2022-11-07_wasp39_run2/ap7_bg9'
-pout = os.getcwd() + '/WASP-39_4/Analysis/White-Light1'
+pin = os.getcwd() + '/WASP-39_NC/Stage4/S4_2022-11-16_wasp39_run1/ap8_bg20'
+pout = os.getcwd() + '/WASP-39_NC/Analysis/White-Light_1611'
 
-f1 = h5py.File(pin + '/S4_wasp39_ap7_bg9_LCData.h5')
+f1 = h5py.File(pin + '/S4_wasp39_ap8_bg20_LCData.h5')
 tim9, fl9, fle9, ycen9 = np.asarray(f1['time']), np.asarray(f1['flux_white']), np.asarray(f1['err_white']), np.asarray(f1['centroid_y'])
 tim9 = tim9 + 2400000.5# + 0.0008578943306929432
 # Removing Nan values

@@ -7,10 +7,10 @@ import utils as utl
 import matplotlib.gridspec as gd
 from gpcheops.utils import corner_plot
 
-pin = os.getcwd() + '/WASP-39_4/Stage4/S4_2022-11-07_wasp39_run2/ap7_bg9'
-pout = os.getcwd() + '/WASP-39_4/Analysis/Spectra_ind'
+pin = os.getcwd() + '/WASP-39_NC/Stage4/S4_2022-11-16_wasp39_run1/ap8_bg20'
+pout = os.getcwd() + '/WASP-39_NC/Analysis/Spectra_ind_1611'
 
-f1 = h5py.File(pin + '/S4_wasp39_ap7_bg9_LCData.h5')
+f1 = h5py.File(pin + '/S4_wasp39_ap8_bg20_LCData.h5')
 instruments = np.array([])
 for i in range(len(f1['wave_mid'])):
     instruments = np.hstack((instruments,'CH' + str(i)))
@@ -52,7 +52,7 @@ for i in range(len(instruments)):
     ## Linear priors
     par_lin = ['theta0_' + instruments[i], 'theta1_' + instruments[i]]
     dist_lin = ['uniform', 'uniform']
-    hyper_lin = [[-3., 3.], [-3., 3.]]
+    hyper_lin = [[-1., 1.], [-1., 1.]]
     ## Total priros
     par_tot = par_P + par_ins + par_lin
     dist_tot = dist_P + dist_ins + dist_lin
@@ -60,7 +60,7 @@ for i in range(len(instruments)):
     priors = juliet.utils.generate_priors(par_tot, dist_tot, hyper_tot)
     # And fitting
     dataset = juliet.load(priors=priors, t_lc=tim, y_lc=fl, yerr_lc=fle, linear_regressors_lc=lin_pars, out_folder=pout + '/' + instruments[i])
-    res = dataset.fit(sampler = 'dynesty', nthreads=4)
+    res = dataset.fit(sampler = 'dynesty', nthreads=8)
 
     # Some plots
     instrument = instruments[i]
