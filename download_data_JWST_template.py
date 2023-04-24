@@ -34,7 +34,7 @@ final_dir = download_dir + '/S1_NIRCam'
 
 # MAST API token for accessing data with exclusive access
 # This can be generated at https://auth.mast.stsci.edu/token
-mast_token = '32ecf7770286437cacfccbd5e91c3fbe'
+mast_token = ''# Write tocken here
 # If data are public, no need to call md.login() or md.logout()
 md.login(mast_token)
 
