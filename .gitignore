@@ -193,3 +193,5 @@ dmypy.json
 /Data/
 /RateInts/Ramp_NIRCam
 /RateInts/Ramp_NIRSpec
+/RateInts/Corr_NIRCam
+/RateInts/Corr_NIRSpec
