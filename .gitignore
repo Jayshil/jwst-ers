@@ -191,10 +191,10 @@ dmypy.json
 /Eureka/WASP-39_NC1/Outputs
 
 /Data/
-/RateInts/Ramp_NIRCam
-/RateInts/Ramp_NIRSpec
-/RateInts/Corr_NIRCam
-/RateInts/Corr_NIRSpec
+/RateInts/Ramp_NRCLW
+/RateInts/Ramp_NRS
+/RateInts/Corr_NRCLW
+/RateInts/Corr_NRS
 
 /Eureka/W39-Jul5/NIRSpec
 
