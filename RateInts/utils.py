@@ -47,3 +47,56 @@ def identify_crays(frames, mask_bp, clip=5, niters=5):
         mask_cr1 = np.abs(resids) < limit[None,:,:]
         mask_cr = mask_cr1*mask_bp
     return mask_cr
+
+def roeba_backgroud_sub(frame, mask):
+    """This function does the background subtraction on one integration based on the ROEBA
+    algorithm (Schlawin et al. 2023). All non-zero pixels in mask are used in computation"""
+    # First let's replace all masked pixels with NaN so we can use nanmedian etc.
+    data_frame, bkg_sub_frame = np.copy(frame), np.copy(frame)
+    bkg_sub_frame[mask == 0.] = np.nan
+
+    ## First amplifier ROEBA
+    ### Slow-read correction (i.e., along the columns)
+    first_amp_roeba, first_amp_data = np.zeros(bkg_sub_frame[:,0:512].shape), np.copy(bkg_sub_frame[:,0:512])
+    first_amp_roeba[:,::2] = np.nanmedian(first_amp_data[:,::2])   # Computing median of all even columns and storing it
+    first_amp_roeba[:,1::2] = np.nanmedian(first_amp_data[:,1::2]) # Computing median of all odd columns and storing it
+    data_frame[:,0:512] = data_frame[:,0:512] - first_amp_roeba
+    ### Fast-read correction (i.e., along the rows)
+    dummy_frame = np.copy(data_frame)
+    dummy_frame[mask == 0.] = np.nan
+    data_frame[:,0:512] = data_frame[:,0:512] - np.nanmedian(dummy_frame[:,0:512], axis=1)[:,None]
+
+    ## Second amplifier ROEBA
+    ### Slow-read correction (i.e., along the columns)
+    second_amp_roeba, second_amp_data = np.zeros(bkg_sub_frame[:,512:1024].shape), np.copy(bkg_sub_frame[:,512:1024])
+    second_amp_roeba[:,::2] = np.nanmedian(second_amp_data[:,::2])    # Computing median of all even columns
+    second_amp_roeba[:,1::2] = np.nanmedian(second_amp_data[:,1::2])  # Computing median of all odd columns
+    data_frame[:,512:1024] = data_frame[:,512:1024] - second_amp_roeba
+    ### Fast-read correction (i.e., along the rows)
+    dummy_frame = np.copy(data_frame)
+    dummy_frame[mask == 0.] = np.nan
+    data_frame[:,512:1024] = data_frame[:,512:1024] - np.nanmedian(dummy_frame[:,512:1024], axis=1)[:,None]
+
+    ## Third amplifier ROEBA
+    ### Slow-read correction (i.e., along the columns)
+    third_amp_roeba, third_amp_data = np.zeros(bkg_sub_frame[:,1024:1536].shape), np.copy(bkg_sub_frame[:,1024:1536])
+    third_amp_roeba[:,::2] = np.nanmedian(third_amp_data[:,::2])   # Computing median of all even columns
+    third_amp_roeba[:,1::2] = np.nanmedian(third_amp_data[:,1::2]) # Computing median of all odd columns
+    data_frame[:,1024:1536] = data_frame[:,1024:1536] - third_amp_roeba
+    ### Fast-read correction (i.e., along the rows)
+    dummy_frame = np.copy(data_frame)
+    dummy_frame[mask == 0.] = np.nan
+    data_frame[:,1024:1536] = data_frame[:,1024:1536] - np.nanmedian(dummy_frame[:,1024:1536], axis=1)[:,None]
+
+    ## Fourth amplifier ROEBA
+    ### Slow-read correction (i.e., along the columns)
+    fourth_amp_roeba, fourth_amp_data = np.zeros(bkg_sub_frame[:,1536:2048].shape), np.copy(bkg_sub_frame[:,1536:2048])
+    fourth_amp_roeba[:,::2] = np.nanmedian(fourth_amp_data[:,::2])    # Computing median of all even columns
+    fourth_amp_roeba[:,1::2] = np.nanmedian(fourth_amp_data[:,1::2])  # Computing median of all odd columns
+    data_frame[:,1536:2048] = data_frame[:,1536:2048] - fourth_amp_roeba
+    ### Fast-read correction (i.e., along the rows)
+    dummy_frame = np.copy(data_frame)
+    dummy_frame[mask == 0.] = np.nan
+    data_frame[:,1536:2048] = data_frame[:,1536:2048] - np.nanmedian(dummy_frame[:,1536:2048], axis=1)[:,None]
+
+    return data_frame
