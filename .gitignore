@@ -192,9 +192,14 @@ dmypy.json
 
 /Data/
 /RateInts/Ramp_NRCLW
+/RateInts/Ramp_NRCSW
 /RateInts/Ramp_NRS
 /RateInts/Corr_NRCLW
+/RateInts/Corr_NRCSW
 /RateInts/Corr_NRS
+
+/NRCSW/Outputs
+/NRCSW/Analysis
 
 /Eureka/W39-Jul5/NIRSpec
 
