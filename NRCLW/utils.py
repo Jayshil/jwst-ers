@@ -337,3 +337,58 @@ def roeba_backgroud_sub(frame, mask, fast_read=True, row_by_row=True):
             data_frame[:,1536:2048] = data_frame[:,1536:2048] - np.nanmedian(dummy_frame[:,1536:2048])
 
     return data_frame
+
+def computeRMS(data, maxnbins=None, binstep=1, isrmserr=False):
+    """Compute the root-mean-squared and standard error for various bin sizes.
+    Parameters: This function is taken from the code `Eureka` -- please cite them!!
+    ----------
+    data : ndarray
+        The residuals after fitting.
+    maxnbins : int; optional
+        The maximum number of bins. Use None to default to 10 points per bin.
+    binstep : int; optional
+        Bin step size. Defaults to 1.
+    isrmserr : bool
+        True if return rmserr, else False. Defaults to False.
+    Returns
+    -------
+    rms : ndarray
+        The RMS for each bin size.
+    stderr : ndarray
+        The standard error for each bin size.
+    binsz : ndarray
+        The different bin sizes.
+    rmserr : ndarray; optional
+        The uncertainty in the RMS. Only returned if isrmserr==True.
+    Notes
+    -----
+    History:
+    - December 29-30, 2021 Taylor Bell
+        Moved code to separate file, added documentation.
+    """
+    data = np.ma.masked_invalid(np.ma.copy(data))
+    
+    # bin data into multiple bin sizes
+    npts = data.size
+    if maxnbins is None:
+        maxnbins = npts / 10.
+    binsz = np.arange(1, maxnbins + binstep, step=binstep, dtype=int)
+    nbins = np.zeros(binsz.size, dtype=int)
+    rms = np.zeros(binsz.size)
+    rmserr = np.zeros(binsz.size)
+    for i in range(binsz.size):
+        nbins[i] = int(np.floor(data.size / binsz[i]))
+        bindata = np.ma.zeros(nbins[i], dtype=float)
+        # bin data
+        # ADDED INTEGER CONVERSION, mh 01/21/12
+        for j in range(nbins[i]):
+            bindata[j] = np.ma.mean(data[j * binsz[i]:(j + 1) * binsz[i]])
+        # get rms
+        rms[i] = np.sqrt(np.ma.mean(bindata ** 2))
+        rmserr[i] = rms[i] / np.sqrt(2. * nbins[i])
+    # expected for white noise (WINN 2008, PONT 2006)
+    stderr = (np.ma.std(data) / np.sqrt(binsz)) * np.sqrt(nbins / (nbins - 1.))
+    if isrmserr is True:
+        return rms, stderr, binsz, rmserr
+    else:
+        return rms, stderr, binsz
