@@ -1,4 +1,10 @@
 import numpy as np
+import matplotlib.pyplot as plt
+from poetss import poetss
+import juliet
+import corner
+from glob import glob
+import pickle
 from photutils.aperture import CircularAnnulus, CircularAperture, ApertureStats
 from photutils.aperture import aperture_photometry as aphot
 import warnings
@@ -392,3 +398,149 @@ def computeRMS(data, maxnbins=None, binstep=1, isrmserr=False):
         return rms, stderr, binsz, rmserr
     else:
         return rms, stderr, binsz
+    
+def make_low_res_spec(native_wav, native_spec, native_spec_err, ch_nos):
+    # Column location, for low resolution eclipse spectrum
+    col_in_1_ch = round(len(native_wav)/ch_nos)
+    col_st = np.arange(0, len(native_wav)-col_in_1_ch, col_in_1_ch, dtype=int)
+    col_end = np.arange(0+col_in_1_ch, len(native_wav), col_in_1_ch, dtype=int)
+    if col_end[-1] != len(native_wav):
+        col_st = np.hstack((col_st, col_end[-1]))
+        col_end = np.hstack((col_end, len(native_wav)))
+    
+    # fp_all
+    fp_all = np.zeros((len(native_wav), 100000))
+    for i in range(fp_all.shape[0]):
+        fp_all[i,:] = np.random.normal(native_spec[i], native_spec_err[i], 100000)
+
+    # For binning the spectrum
+    spec_fp_med, spec_fp_up, spec_fp_lo = np.zeros(len(col_st)), np.zeros(len(col_st)), np.zeros(len(col_st))
+    spec_wav, spec_wav_bin = np.zeros(len(col_st)), np.zeros(len(col_end))
+    # And performing actual binning
+    for i in range(len(col_st)):
+        # Spectrum 2 --------
+        # For eclipse depths
+        fp12 = np.median(fp_all[col_st[i]:col_end[i],:], axis=0)
+        qua_fp12 = juliet.utils.get_quantiles(fp12*1e6)
+        spec_fp_med[i], spec_fp_up[i], spec_fp_lo[i] = qua_fp12[0], qua_fp12[1]-qua_fp12[0], qua_fp12[0]-qua_fp12[2]
+        # For wavelength bins
+        if col_end[i] != len(native_wav):
+            spec_wav[i] = (native_wav[col_st[i]] + native_wav[col_end[i]])/2
+            spec_wav_bin[i] = np.abs(native_wav[col_st[i]] - native_wav[col_end[i]])
+        else:
+            spec_wav[i] = (native_wav[col_st[i]] + native_wav[col_end[i]-1])/2
+            spec_wav_bin[i] = np.abs(native_wav[col_st[i]] - native_wav[col_end[i]-1])
+    return spec_wav, spec_wav_bin, spec_fp_med, spec_fp_lo, spec_fp_up
+
+def corner_plot(folder, planet_only=False):
+    """
+    This function will generate corner plots of posterios
+    in a given folder
+    -----------------------------------------------------
+    Parameters:
+    -----------
+    folder : str
+        Path of the folder where the .pkl file is located
+    planet_only : bool
+        Boolean on whether to make corner plot of only
+        planetary parameters
+        Default is False
+    -----------
+    return
+    -----------
+    corner plot : .pdf file
+        stored inside folder directory
+    """
+    pcl = glob(folder + '/*.pkl')[0]
+    post = pickle.load(open(pcl, 'rb'), encoding='latin1')
+    p1 = post['posterior_samples']
+    lst = []
+    if not planet_only:
+        for i in p1.keys():
+            gg = i.split('_')
+            if ('p1' in gg) or ('mflux' in gg) or ('sigma' in gg) or ('GP' in gg) or ('mdilution' in gg) or ('q1' in gg) or ('q2' in gg) or (gg[0][0:5] == 'theta'):
+                lst.append(i)
+    else:
+        for i in p1.keys():
+            gg = i.split('_')
+            if 'p1' in gg or 'q1' in gg or 'q2' in gg:
+                lst.append(i)
+    if 't0' in lst[0].split('_'):
+        t01 = np.floor(p1[lst[0]][0])
+        cd = p1[lst[0]] - t01
+        lst[0] = lst[0] + ' - ' + str(t01)
+    elif 'fp' in lst[0].split('_'):
+        cd = p1[lst[0]]*1e6
+        lst[0] = lst[0] + ' (in ppm)'
+    else:
+        cd = p1[lst[0]]
+    for i in range(len(lst)-1):
+        if 't0' in lst[i+1].split('_'):
+            t02 = np.floor(p1[lst[i+1]][0])
+            cd1 = p1[lst[i+1]] - t02
+            cd = np.vstack((cd, cd1))
+            lst[i+1] = lst[i+1] + ' - ' + str(t02)
+        elif 'fp' in lst[i+1].split('_'):
+            cd = np.vstack((cd, p1[lst[i+1]]*1e6))
+            lst[i+1] = lst[i+1] + ' (in ppm)'
+        else:
+            cd = np.vstack((cd, p1[lst[i+1]]))
+    data = np.transpose(cd)
+    value = np.median(data, axis=0)
+    ndim = len(lst)
+    fig = corner.corner(data, labels=lst)
+    axes = np.array(fig.axes).reshape((ndim, ndim))
+
+    for i in range(ndim):
+        ax = axes[i,i]
+        ax.axvline(value[i], color = 'r')
+
+    for yi in range(ndim):
+        for xi in range(yi):
+            ax = axes[yi, xi]
+            ax.axvline(value[xi], color = 'r')
+            ax.axhline(value[yi], color = 'r')
+            ax.plot(value[xi], value[yi], 'sr')
+
+    fig.savefig(folder + "/corner.png")
+    plt.close(fig)
+
+def col_spec(lc, ch_nos):
+    """Given a number of total number of channels, this function gives an array containing
+    start and end column for each channel"""
+    if ch_nos != 1:
+        col_in_1_ch = round(lc.shape[1]/ch_nos)
+        col_st = np.arange(0, lc.shape[1]-col_in_1_ch, col_in_1_ch, dtype=int)
+        col_end = np.arange(0+col_in_1_ch, lc.shape[1], col_in_1_ch, dtype=int)
+    else:
+        col_st, col_end = np.array([0]), np.array([lc.shape[1]])
+    
+    if col_end[-1] != lc.shape[1]:
+        col_st = np.hstack((col_st, col_end[-1]))
+        col_end = np.hstack((col_end, lc.shape[1]))
+    
+    return col_st, col_end
+
+def spectral_lc(lc, lc_err, wav, ch_nos):
+    """Given lc data cube, lc error data cube, wavelength calibration array and number of channels
+    this function generate spectral lightcurves along with wavelengths"""
+    # Columns
+    if ch_nos != lc.shape[1]:
+        col_st, col_end = col_spec(lc, ch_nos)
+        # Creating spectral lc array
+        spec_lc, spec_err_lc = np.zeros((lc.shape[0], len(col_st))), np.zeros((lc.shape[0], len(col_st)))
+        wavs, wav_bin_size = np.zeros(len(col_st)), np.zeros(len(col_st))
+        for i in range(len(col_st)):
+            spec_lc[:,i], spec_err_lc[:,i] = poetss.white_light(lc[:,col_st[i]:col_end[i]], \
+                                                                lc_err[:,col_st[i]:col_end[i]])
+            if col_end[i] != lc.shape[1]:
+                wavs[i] = (wav[col_st[i]] + wav[col_end[i]])/2
+                wav_bin_size[i] = np.abs(wav[col_st[i]] - wav[col_end[i]])
+            else:
+                wavs[i] = (wav[col_st[i]] + wav[col_end[i]-1])/2
+                wav_bin_size[i] = np.abs(wav[col_st[i]] - wav[col_end[i]-1])
+    else:
+        print('>>>> --- Working at the native resolution of the instrument...')
+        spec_lc, spec_err_lc = lc, lc_err
+        wavs, wav_bin_size = wav, np.append(np.diff(wav), np.diff(wav)[-1])
+    return spec_lc, spec_err_lc, wavs, wav_bin_size
