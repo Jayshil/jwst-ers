@@ -1,7 +1,5 @@
 import numpy as np
 from jwst import datamodels
-import multiprocessing
-multiprocessing.set_start_method('fork')
 from jwst.pipeline import calwebb_detector1
 from glob import glob
 from pathlib import Path
