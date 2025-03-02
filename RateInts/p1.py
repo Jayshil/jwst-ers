@@ -70,8 +70,8 @@ for i in range(len(segs)):
         ## Continuing with the rest of the pipeline
         linearity_results = calwebb_detector1.linearity_step.LinearityStep.call(refpix_results, save_results=False)
         darkcurrent_results = calwebb_detector1.dark_current_step.DarkCurrentStep.call(linearity_results, save_results=False)
-        rampfitting_results = calwebb_detector1.ramp_fit_step.RampFitStep.call(darkcurrent_results, maximum_cores='all', save_results=False)
-        gainscale_results = calwebb_detector1.gain_scale_step.GainScaleStep.call(rampfitting_results[1], output_dir=os.getcwd() + '/RateInts/Ramp_NRCLW', save_results=True)
+        rampfitting_results = calwebb_detector1.ramp_fit_step.RampFitStep.call(darkcurrent_results, save_results=False)
+        gainscale_results = calwebb_detector1.gain_scale_step.GainScaleStep.call(rampfitting_results[1], output_dir=os.getcwd() + '/RateInts/Ramp_NRSPR', save_results=True)
 
         # Data quality mask
         dq = rampfitting_results[1].dq
