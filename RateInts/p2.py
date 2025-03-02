@@ -123,15 +123,15 @@ for i in range(len(segs)):
         print('>>>> --- Correcting data...')
         corrected_data = np.copy(gainscale_results.data)
         corrected_data[mask_bcr == 0] = np.nan
-        for i in range(corrected_data.shape[0]):
-            corrected_data[i,:,:] = utils.replace_nan(corrected_data[i,:,:])
+        for integration in range(corrected_data.shape[0]):
+            corrected_data[integration,:,:] = utils.replace_nan(corrected_data[integration,:,:])
         print('>>>> --- Done!!')
 
         print('>>>> --- Additional slow-read and fast-read background correction...')
         ## Slow-read
         corrected_data_bkg = np.ones(corrected_data.shape)
-        for i in tqdm(range(corrected_data.shape[0])):
-            corrected_data_bkg[i,:,:], _ = reduce.polynomial_bkg_cols(corrected_data[i,:,:], mask=m1*mask_bcr[i,:,:], deg=1, sigma=5)
+        for integration in tqdm(range(corrected_data.shape[0])):
+            corrected_data_bkg[integration,:,:], _ = reduce.polynomial_bkg_cols(corrected_data[integration,:,:], mask=m1*mask_bcr[i,:,:], deg=1, sigma=5)
         
         ## Fast-read
         corrected_data_bkg1 = np.ones(corrected_data.shape)
