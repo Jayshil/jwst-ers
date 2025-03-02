@@ -115,7 +115,7 @@ for i in range(len(segs)):
         print('>>>> --- Additional background correction...')
         corrected_data_bkg = np.ones(corrected_data.shape)
         for integration in tqdm(range(corrected_data.shape[0])):
-            corrected_data_bkg[integration,:,:], _ = reduce.col_by_col_bkg_sub(corrected_data[integration,:,:], mask=m1*mask_bcr[i,:,:])
+            corrected_data_bkg[integration,:,:], _ = reduce.polynomial_bkg_cols(corrected_data[integration,:,:], mask=m1*mask_bcr[i,:,:], deg=1)
         print('>>>> --- Done!!')
 
         np.save(p2 + '/Corrected_data_seg' + seg + '.npy', corrected_data_bkg)
