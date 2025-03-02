@@ -58,7 +58,7 @@ for i in range(len(segs)):
 
         ## ROEBA algorithm
         ### Mask for odd-even effect and slow-read correction
-        m1 = np.ones(refpix_results.data[nint,-1,:,:].shape)
+        m1 = np.ones(refpix_results.data[0,-1,:,:].shape)
         m1[8:22,15:475] = 0.
 
         ## Column-by-column background subtraction on group level
