@@ -4,7 +4,7 @@ import multiprocessing
 multiprocessing.set_start_method('fork')
 from jwst.pipeline import calwebb_detector1
 from glob import glob
-from path import Path
+from pathlib import Path
 from tqdm import tqdm
 import os
 import utils

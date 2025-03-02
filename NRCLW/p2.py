@@ -7,7 +7,7 @@ import utils as utl
 import matplotlib.gridspec as gd
 from astropy.stats import mad_std
 from glob import glob
-from path import Path
+from pathlib import Path
 from tqdm import tqdm
 import multiprocessing
 multiprocessing.set_start_method('fork')

@@ -6,7 +6,7 @@ from matplotlib.patches import Wedge
 from astropy.stats import mad_std
 from tqdm import tqdm
 import utils as utl
-from path import Path
+from pathlib import Path
 
 # This file is to extract aperture photometry from NIRCam SW channel
 
