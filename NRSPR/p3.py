@@ -226,7 +226,9 @@ rms, stderr, binsz = computeRMS(resid*1e-6, binstep=1)
 normfactor = 1e-6
 
 mad_sigs = pipe_mad(resid)
+rms_resids = np.sqrt(np.mean(resid**2))
 print('Precision of the lightcurve: {:.4f} ppm'.format(mad_sigs))
+print('RMS of the residuals: {:.4f} ppm'.format(rms_resids))
 print('Median errorbar after the fitting: {:.4f} ppm'.format(np.nanmedian(fle9)*1e6))
 
 plt.figure(figsize=(8,6))
