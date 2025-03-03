@@ -249,7 +249,7 @@ def lcbin(time, flux, binwidth=0.06859, nmin=4, time0=None,
         time0 = tgap[np.argmax(gap)]
         time0 = time0 - binwidth*np.ceil((time0-min(time))/binwidth)
 
-    n = np.int(1+np.ceil(np.ptp(time)/binwidth))
+    n = int(1+np.ceil(np.ptp(time)/binwidth))
     r = (time0,time0+n*binwidth)
     n_in_bin,bin_edges = np.histogram(time,bins=n,range=r)
     bin_indices = np.digitize(time,bin_edges)
@@ -257,7 +257,7 @@ def lcbin(time, flux, binwidth=0.06859, nmin=4, time0=None,
     t_bin = np.zeros(n)
     f_bin = np.zeros(n)
     e_bin = np.zeros(n)
-    n_bin = np.zeros(n, dtype=np.int)
+    n_bin = np.zeros(n, dtype=int)
 
     for i,n in enumerate(n_in_bin):
         if n >= nmin:
