@@ -51,7 +51,6 @@ wht_light_lc, wht_light_err = poetss.white_light(lc1, lc_err1)
 
 # And the final lightcurve
 tim9, fl9, fle9 = times, wht_light_lc, wht_light_err
-tim9 = tim9 + 2400000.5
 
 # Removing Nan values
 tim7, fl7, fle7 = tim9[~np.isnan(fl9)], fl9[~np.isnan(fl9)], fle9[~np.isnan(fl9)]
@@ -182,7 +181,7 @@ ax2.errorbar(tim[instrument], resid, yerr=fle9*1e6, c='cornflowerblue', fmt='.')
 ax2.axhline(y=0.0, c='black', ls='--', zorder=100)
 ax2.set_ylabel('Residuals (ppm)', fontsize=14)
 ax2.set_xlabel('Time (BJD)', fontsize=14)
-ax2.set_ylim(-750,750)
+ax2.set_ylim(-10000,10000)
 ax2.set_xlim(np.min(tim[instrument]), np.max(tim[instrument]))
 plt.setp(ax2.get_xticklabels(), fontsize=12)
 plt.setp(ax2.get_yticklabels(), fontsize=12)
@@ -213,7 +212,7 @@ ax2.errorbar(tim[instrument], resid, yerr=fle9*1e6, c='cornflowerblue', fmt='.')
 ax2.axhline(y=0.0, c='black', ls='--', zorder=100)
 ax2.set_ylabel('Residuals (ppm)', fontsize=14)
 ax2.set_xlabel('Time (BJD)', fontsize=14)
-ax2.set_ylim(-750,750)
+ax2.set_ylim(-10000,10000)
 ax2.set_xlim(np.min(tim[instrument]), np.max(tim[instrument]))
 plt.setp(ax2.get_xticklabels(), fontsize=12)
 plt.setp(ax2.get_yticklabels(), fontsize=12)
