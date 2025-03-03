@@ -69,8 +69,8 @@ for i in range(len(segs)):
                 
         ## Continuing with the rest of the pipeline
         linearity_results = calwebb_detector1.linearity_step.LinearityStep.call(refpix_results, save_results=False)
-        darkcurrent_results = calwebb_detector1.dark_current_step.DarkCurrentStep.call(linearity_results, save_results=False)
-        rampfitting_results = calwebb_detector1.ramp_fit_step.RampFitStep.call(darkcurrent_results, save_results=False)
+        #darkcurrent_results = calwebb_detector1.dark_current_step.DarkCurrentStep.call(linearity_results, save_results=False)
+        rampfitting_results = calwebb_detector1.ramp_fit_step.RampFitStep.call(linearity_results, save_results=False)
         gainscale_results = calwebb_detector1.gain_scale_step.GainScaleStep.call(rampfitting_results[1], output_dir=os.getcwd() + '/RateInts/Ramp_NRSPR', save_results=True)
 
         # Data quality mask
@@ -115,10 +115,14 @@ for i in range(len(segs)):
         print('>>>> --- Additional background correction...')
         corrected_data_bkg = np.ones(corrected_data.shape)
         for integration in tqdm(range(corrected_data.shape[0])):
-            corrected_data_bkg[integration,:,:], _ = reduce.polynomial_bkg_cols(corrected_data[integration,:,:], mask=m1*mask_bcr[i,:,:], deg=1)
+            corrected_data_bkg[integration,:,:], _ = reduce.polynomial_bkg_cols(corrected_data[integration,:,:], mask=m1*mask_bcr[i,:,:], deg=1, sigma=3)
+        
+        corrected_data_bkg1 = np.ones(corrected_data.shape)
+        for integration in tqdm(range(corrected_data.shape[0])):
+            corrected_data_bkg1[integration,:,:], _ = reduce.row_by_row_bkg_sub(corrected_data_bkg[integration,:,:], mask=m1*mask_bcr[i,:,:])
         print('>>>> --- Done!!')
 
-        np.save(p2 + '/Corrected_data_seg' + seg + '.npy', corrected_data_bkg)
+        np.save(p2 + '/Corrected_data_seg' + seg + '.npy', corrected_data_bkg1)
         np.save(p2 + '/Corrected_errors_seg' + seg + '.npy', corrected_errs)
         np.save(p2 + '/Mask_bcr_seg' + seg + '.npy', mask_bcr)
         np.save(p2 + '/Times_bjd_seg' + seg + '.npy', times_bjd)
