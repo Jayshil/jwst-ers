@@ -8,6 +8,8 @@ import pickle
 from photutils.aperture import CircularAnnulus, CircularAperture, ApertureStats
 from photutils.aperture import aperture_photometry as aphot
 import warnings
+from astropy.stats import mad_std, SigmaClip
+from exotoolbox.utils import tdur
 
 def replace_nan(data, max_iter = 50):
     """Replaces NaN-entries by mean of neighbours.
@@ -544,3 +546,31 @@ def spectral_lc(lc, lc_err, wav, ch_nos):
         spec_lc, spec_err_lc = lc, lc_err
         wavs, wav_bin_size = wav, np.append(np.diff(wav), np.diff(wav)[-1])
     return spec_lc, spec_err_lc, wavs, wav_bin_size
+
+def outlier_removal(tims, flx, flxe, clip=5, msk1=True, verbose=True):
+    # Let's first mask transits and occultations
+    if msk1==True:
+        per, T0 = 4.05527892, 2456401.39763  # From Bourrier et al. 2018
+        t14 = 0.5*tdur(per=per, ar=11.390, rprs=0.1457, bb=0.4498)
+        phs_t = juliet.utils.get_phases(tims, per, T0)
+        phs_e = juliet.utils.get_phases(tims, per, (T0+(per/2)))
+
+        mask = np.where((np.abs(phs_e*per) >= t14)&(np.abs(phs_t*per) >= t14))[0]
+        tim7, fl7, fle7 = tims[mask], flx[mask], flxe[mask]
+    else:
+        tim7, fl7, fle7 = tims, flx, flxe
+
+    # Sigma clipping
+    sc = SigmaClip(sigma_upper=clip, sigma_lower=clip, stdfunc=mad_std, maxiters=None)
+    msk1 = sc(fl7).mask
+
+    tim_outliers = tim7[msk1]
+
+    ## Removing outliers from the data
+    msk2 = np.ones(len(tims), dtype=bool)
+    for i in range(len(tim_outliers)):
+        msk2[np.where(tims == tim_outliers[i])[0]] = False
+    if verbose:
+        print('---- Total number of points removed: ', len(msk2) - np.sum(msk2))
+        print('---- Total per cent of point removed: {:.4f} %'.format((len(msk2) - np.sum(msk2))*100/len(msk2)))
+    return msk2
