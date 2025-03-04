@@ -214,3 +214,8 @@ dmypy.json
 /NRSPR/Outputs*
 /NRSPR/Analysis
 /RateInts/Corr_NRSPR
+
+/NRSG395H/Outputs
+/NRSG395H/Analysis
+/RateInts/Ramp*
+/RateInts/Corr*
