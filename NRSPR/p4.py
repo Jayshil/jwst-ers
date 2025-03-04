@@ -29,12 +29,13 @@ post_joint_wht = pickle.load(open(f12_joint_wht, 'rb'))
 post_joint_wht1 = post_joint_wht['posterior_samples']
 
 # Wavelength map
-#wav_map = np.load(os.getcwd() + '/Data/wavelength_map_NRSPR.npy')
+wav_map = np.load(os.getcwd() + '/Data/wav_map_nrspr.npy')
 xpos = np.arange(25, 470, 1)
-#wav_soln = np.zeros(len(xpos))
-#for i in range(len(xpos)):
-#    wav_soln[i] = wav_map[128, xpos[i]]
-wav_soln = np.linspace(0.46, 5.71, len(xpos))
+# Loading median trace position
+median_trace = np.load(os.getcwd() + '/NRSPR/Outputs/median_trace.npy')
+wav_soln = np.zeros(len(xpos))
+for i in range(len(xpos)):
+    wav_soln[i] = wav_map[int(median_trace[i]), xpos[i]]
 
 #-------------------------------------
 #  Loading the data
