@@ -16,15 +16,15 @@ multiprocessing.set_start_method('fork')
 # However, I am using multiprocesing, so multiple lightcurves analysed simultaneously
 
 visit = 'NRSPR'
-analysis1 = 'SpectralLC5'
-chanel_nos = 50
+analysis1 = 'SpectralLC7'
+chanel_nos = 445
 nthreads = 8
 
 # For `stark` data
 pin = os.getcwd() + '/NRSPR/Outputs/'
 
 # Corresponding white-light lightcurve analysis
-f12_joint_wht = glob(os.getcwd() + '/NRSPR/Analysis/White-Light/*.pkl')[0]
+f12_joint_wht = glob(os.getcwd() + '/NRSPR/Analysis/White-light-above150/*.pkl')[0]
 post_joint_wht = pickle.load(open(f12_joint_wht, 'rb'))
 post_joint_wht1 = post_joint_wht['posterior_samples']
 
