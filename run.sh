@@ -1,2 +1,2 @@
-python RateInts/p1.py
-python NRSPR/p2.py
+python NRSPR/p3.py
+python NRSPR/p4.py

@@ -211,6 +211,6 @@ dmypy.json
 /NRCLW/Analysis
 /NRCLW/Outputs
 
-/NRSPR/Outputs
+/NRSPR/Outputs*
 /NRSPR/Analysis
 /RateInts/Corr_NRSPR

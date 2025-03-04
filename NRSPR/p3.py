@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from utils import outlier_removal, computeRMS
+from utils import computeRMS
+from astropy.stats import mad_std
 import matplotlib.gridspec as gd
 from poetss import poetss
 import juliet
@@ -10,8 +11,11 @@ import os
 import multiprocessing
 multiprocessing.set_start_method('fork')
 
+def standard(x):
+    return (x - np.nanmedian(x)) / mad_std(x)
+
 pin = os.getcwd() + '/NRSPR/Outputs/'
-pout = os.getcwd() + '/NRSPR/Analysis/White-light'
+pout = os.getcwd() + '/NRSPR/Analysis/White-light-above150'
 catwoman = False
 
 def pipe_mad(data):
@@ -19,7 +23,7 @@ def pipe_mad(data):
 
 ## Segment!!!
 segs = []
-for i in range(3):
+for i in range(4):
     if i < 9:
         segs.append('00' + str(i+1))
     else:
@@ -28,7 +32,7 @@ for i in range(3):
 # Data files
 instrument = 'NRSPR'
 tim, fl, fle = {}, {}, {}
-
+lin_pars = {}
 # --------------------------------------------------------------------------
 #
 #                       Loading the data
@@ -46,6 +50,10 @@ for i in range(len(segs)):
 lc1, lc_err1 = np.vstack(lc_all), np.vstack(lc_err_all)
 lc_err1 = np.sqrt(lc_err1)
 
+lc1, lc_err1 = lc1[:,125:], lc_err1[:,125:]
+step1, step2, step3 = np.zeros(len(times)), np.zeros(len(times)), np.zeros(len(times))
+step1[0:6099], step2[6099:6099+6100+6100], step3[6099+6100+6100:] = 1., 1., 1.
+
 ## White-light lightcurve
 wht_light_lc, wht_light_err = poetss.white_light(lc1, lc_err1)
 
@@ -56,11 +64,12 @@ tim9, fl9, fle9 = times, wht_light_lc, wht_light_err
 tim7, fl7, fle7 = tim9[~np.isnan(fl9)], fl9[~np.isnan(fl9)], fle9[~np.isnan(fl9)]
 
 # Outlier removal
-msk2 = outlier_removal(tim7, fl7, fle7, clip=5, msk1=False)
-tim7, fl7, fle7 = tim7[msk2], fl7[msk2], fle7[msk2]
+#msk2 = outlier_removal(tim7, fl7, fle7, clip=5, msk1=False)
+#tim7, fl7, fle7 = tim7[msk2], fl7[msk2], fle7[msk2]
 
 # Saving them!
 tim[instrument], fl[instrument], fle[instrument] = tim7, fl7/np.median(fl7), fle7/np.median(fl7)
+lin_pars[instrument] = np.transpose( np.vstack( [step1, step2, step3, standard(tim7)] ) )
 
 # --------------------------------------------------------------------------
 # --------------------------------------------------------------------------
@@ -100,15 +109,22 @@ par_ins = ['mdilution_' + instrument, 'mflux_' + instrument, 'sigma_w_' + instru
 dist_ins = ['fixed', 'normal', 'loguniform']
 hyper_ins = [1.0, [0., 0.1], [0.1, 10000.]]
 
+### Linear parameters
+par_lin, dist_lin, hyper_lin = [], [], []
+for i in range(lin_pars[instrument].shape[-1]):
+    par_lin = par_lin + ['theta' + str(i) + '_' + instrument]
+    dist_lin = dist_lin + ['uniform']
+    hyper_lin = hyper_lin + [[-1., 1.]]
+
 ### GP parameters
 par_gp = ['GP_sigma_' + instrument, 'GP_timescale_' + instrument, 'GP_rho_' + instrument]
 dist_gp = ['loguniform', 'loguniform', 'loguniform']
 hyper_gp = [[1e-5, 10000.], [1e-3, 1e2], [1e-3, 1e2]]
 
 ## Total priors
-par_tot = par_P + par_ins + par_gp
-dist_tot = dist_P + dist_ins + dist_gp
-hyper_tot = hyper_P + hyper_ins + hyper_gp
+par_tot = par_P + par_ins + par_lin + par_gp
+dist_tot = dist_P + dist_ins + dist_lin + dist_gp
+hyper_tot = hyper_P + hyper_ins + hyper_lin + hyper_gp
 
 priors = juliet.utils.generate_priors(par_tot, dist_tot, hyper_tot)
 
@@ -123,7 +139,7 @@ priors = juliet.utils.generate_priors(par_tot, dist_tot, hyper_tot)
 
 
 # ------- And, fitting
-dataset = juliet.load(priors=priors, t_lc=tim, y_lc=fl, yerr_lc=fle, GP_regressors_lc=tim,\
+dataset = juliet.load(priors=priors, t_lc=tim, y_lc=fl, yerr_lc=fle, GP_regressors_lc=tim, linear_regressors_lc=lin_pars,\
                       out_folder=pout)
 res = dataset.fit(sampler = 'dynesty', nthreads=8)
 
