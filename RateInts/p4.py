@@ -35,10 +35,10 @@ for se in range(len(segs)):
     print('>>>> --- Working on Segment ' + str(seg))
     print('>>>> --- --- --- --- --- --- --- --- --- ---')
     # See if outputs are there or not
-    f1 = Path(p2 + '/Corrected_data_seg' + seg + '.npy')
-    f2 = Path(p2 + '/Corrected_errors_seg' + seg + '.npy')
-    f3 = Path(p2 + '/Mask_bcr_seg' + seg + '.npy')
-    f4 = Path(p2 + '/Times_bjd_seg' + seg + '.npy')
+    f1 = Path(p2 + '/Corrected_data_' + detector + '_seg' + seg + '.npy')
+    f2 = Path(p2 + '/Corrected_errors_' + detector + '_seg' + seg + '.npy')
+    f3 = Path(p2 + '/Mask_bcr_' + detector + '_seg' + seg + '.npy')
+    f4 = Path(p2 + '/Times_bjd_' + detector + '_seg' + seg + '.npy')
 
     if f1.exists() and f2.exists() and f3.exists() and f4.exists():
         all_completed = True
@@ -99,7 +99,7 @@ for se in range(len(segs)):
         print('>>>> --- Performing background subtraction...')
         mask_bkg = np.ones(corrected_data[0,:,:].shape)
         for i in range(len(xpos)):
-            mask_bkg[int(trace1[i]-7):int(trace1[i]+7+1), int(xpos[i])] = 0.
+            mask_bkg[int(trace1[i]-10):int(trace1[i]+10+1), int(xpos[i])] = 0.
         
         corrected_data_bkg = np.ones(corrected_data.shape)
         for i in tqdm(range(corrected_data.shape[0])):
