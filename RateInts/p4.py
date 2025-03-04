@@ -99,7 +99,7 @@ for se in range(len(segs)):
         print('>>>> --- Performing background subtraction...')
         mask_bkg = np.ones(corrected_data[0,:,:].shape)
         for i in range(len(xpos)):
-            mask_bkg[int(trace1[i]-10):int(trace1[i]+10+1), int(xpos[i])] = 0.
+            mask_bkg[int(trace1[i]-7):int(trace1[i]+7+1), int(xpos[i])] = 0.
         
         corrected_data_bkg = np.ones(corrected_data.shape)
         for i in tqdm(range(corrected_data.shape[0])):
