@@ -234,24 +234,28 @@ for i in tqdm(range(spec_lc1.shape[1])):
     utl.corner_plot(pout, False)
 
 
-fig = plt.figure(figsize=(8,6))
-for i in tqdm(range(spec_lc1.shape[1])):
-# Alan deviation plot
-    rms, stderr, binsz = utl.computeRMS(residuals, binstep=1)
-    normfactor = 1e-6
+f10 = os.getcwd() + '/NRSPR/Analysis/' + analysis1 + '/alan_deviation.png'
+if not Path(f10).exists():
+    fig = plt.figure(figsize=(8,6))
+    for i in tqdm(range(spec_lc1.shape[1])):
+    # Alan deviation plot
+        rms, stderr, binsz = utl.computeRMS(residuals, binstep=1)
+        normfactor = 1e-6
 
-    plt.plot(binsz, rms / normfactor, color='black', lw=1.5,
-                    label='Fit RMS', zorder=3, alpha=0.5)
-    plt.plot(binsz, stderr / normfactor, color='red', ls='-', lw=2,
-                    label=r'Std. Err. ($1/\sqrt{N}$)', zorder=1)
-    #plt.xlim(0.95, binsz[-1] * 2)
-    #plt.ylim(stderr[-1] / normfactor / 2., stderr[0] / normfactor * 2.)
-    if i == 0:
-        plt.legend(loc='best')
+        plt.plot(binsz, rms / normfactor, color='black', lw=1.5,
+                        label='Fit RMS', zorder=3, alpha=0.5)
+        plt.plot(binsz, stderr / normfactor, color='red', ls='-', lw=2,
+                        label=r'Std. Err. ($1/\sqrt{N}$)', zorder=1)
+        #plt.xlim(0.95, binsz[-1] * 2)
+        #plt.ylim(stderr[-1] / normfactor / 2., stderr[0] / normfactor * 2.)
+        if i == 0:
+            plt.legend(loc='best')
 
-plt.xlabel("Bin Size (N frames)", fontsize=14)
-plt.ylabel("RMS (ppm)", fontsize=14)
-plt.xscale('log')
-plt.yscale('log')
-plt.savefig(os.getcwd() + '/NRSPR/Analysis/' + analysis1 + '/alan_deviation.png')
-plt.close(fig)
+    plt.xlabel("Bin Size (N frames)", fontsize=14)
+    plt.ylabel("RMS (ppm)", fontsize=14)
+    plt.xscale('log')
+    plt.yscale('log')
+    plt.savefig(os.getcwd() + '/NRSPR/Analysis/' + analysis1 + '/alan_deviation.png')
+    plt.close(fig)
+else:
+    pass
