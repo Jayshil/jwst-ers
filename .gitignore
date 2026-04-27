@@ -219,3 +219,5 @@ dmypy.json
 /NRSG395H/Analysis
 /RateInts/Ramp*
 /RateInts/Corr*
+/RateInts/StelSpec*
+/MIRI/Outputs
