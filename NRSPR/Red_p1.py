@@ -33,7 +33,8 @@ pout2 = os.getcwd() + '/NRSPR/Outputs'
 # Aperture radii and sigma clipping threshold
 # -----------------------------------------------------
 aprad_psf = 7
-aprad_extraction = 5
+aprad_extraction_1d = 5
+aprad_extraction_2d = 2
 clip_sigma = 20
 oversample_psf = 2
 xstart, xend = 150, 450
@@ -246,7 +247,7 @@ for seg in segments:
     for inte in tqdm(range( ap_spec1d.shape[0] )):
         ap_spec1d[inte, :], ap_var1d[inte, :] = aperture_extract(frame=corrected_data[inte,:,xpos[0]:xpos[-1]+1],\
                                                                 variance=corrected_errs[inte,:,xpos[0]:xpos[-1]+1]**2,\
-                                                                ord_pos=ypos2d[inte,:], ap_rad=aprad_extraction)
+                                                                ord_pos=ypos2d[inte,:], ap_rad=aprad_extraction_1d)
         
     # ------ Calculating the median spectrum across all integrations ------
     med_ap_spec1d = np.nanmedian(ap_spec1d, axis=0)
@@ -327,7 +328,7 @@ for seg in segments:
                                                                           data=corrected_data[inte,:,xpos[0]:xpos[-1]+1],\
                                                                           variance=corrected_errs[inte,:,xpos[0]:xpos[-1]+1]**2,\
                                                                           mask=mask_badpix_updated[inte,:,xpos[0]:xpos[-1]+1],\
-                                                                          ord_pos=ypos2d[inte,:], ap_rad=aprad_extraction)
+                                                                          ord_pos=ypos2d[inte,:], ap_rad=aprad_extraction_1d)
         
     # ----------------------------------------------------------
     #    Plotting the extracted spectrum for all integrations
@@ -394,7 +395,7 @@ for seg in segments:
                                                                           data=corrected_data[inte,:,xpos[0]:xpos[-1]+1],\
                                                                           variance=corrected_errs[inte,:,xpos[0]:xpos[-1]+1]**2,\
                                                                           mask=mask_badpix_updated2d[inte,:,xpos[0]:xpos[-1]+1],\
-                                                                          ord_pos=ypos2d[inte,:], ap_rad=aprad_extraction)
+                                                                          ord_pos=ypos2d[inte,:], ap_rad=aprad_extraction_2d)
         
     resid1 = np.zeros(syth1d.shape)
     for j in range(resid1.shape[0]):
